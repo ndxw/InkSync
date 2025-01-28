@@ -52,5 +52,5 @@ Mkfile.old
 dkms.conf
 
 src/scripts/mouse_deltas.txt
-/ESP32-BLE_Mouse/
+/ESP32-BLE-Mouse/
 
