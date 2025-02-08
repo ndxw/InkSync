@@ -91,11 +91,7 @@ uint8_t spiCommand(SPIClass *spi, uint16_t data) {
   uint16_t ret;
   uint8_t addrByte = (uint8_t)(data >> 8);
   uint8_t dataByte = (uint8_t)(data & 0xFF);
-  // char buffer[32];
-  // sprintf(buffer, "addrByte=0x%X\n", addrByte);
-  // Serial.println(buffer);
-  // sprintf(buffer, "dataByte=0x%X\n", dataByte);
-  // Serial.println(buffer);
+  
   pinMode(VSPI_MISO, OUTPUT);
   spi->beginTransaction(SPISettings(spiClk, MSBFIRST, SPI_MODE3));
   digitalWrite(spi->pinSS(), LOW);  //pull SS slow to prep other end for transfer
