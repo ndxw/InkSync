@@ -10,7 +10,7 @@
 //////////////////////////////////////////////////////////
 
 static const int spiClk = 1000000;  // 1 MHz
-static const int spiClkPeriodMicroseconds = 500000;
+static const int spiClkPeriodMicroseconds = 10;
 
 
 void setup() {
@@ -23,19 +23,14 @@ void setup() {
 
 void loop() {
 
-  digitalWrite(SPI_MISO, HIGH);
-  delay(10);
-  digitalWrite(SPI_MISO, LOW);
-  delay(10);
+  uint8_t ret = SPIRead(0x01);
+  char buffer[64];
+  sprintf(buffer, "0x%X", ret);
+  Serial.println(buffer);
 
-  // uint8_t ret = SPIRead(compileSPIProtocol(0x00, 0b01011101, 0b00110011));
-  // char buffer[64];
-  // sprintf(buffer, "0x%X", ret);
-  // Serial.println(buffer);
-
-  // while(1){
-  //   delay(3000);
-  // }  
+  while(1){
+    delay(3000);
+  }  
 }
 
 void initSPI() {
@@ -47,14 +42,19 @@ void initSPI() {
   digitalWrite(SPI_NCS, HIGH);
 }
 
-void SPIWrite(uint16_t data)
+void SPIWrite(uint8_t addr, uint8_t data)
 {
+  // place addr in most significant 8 bits
+  uint16_t protocol = ((uint16_t)(addr | 0x80)) << 8;
+  // place data in least significant 8 bits
+  protocol |= data;
+
   pinMode(SPI_MISO, OUTPUT);
   digitalWrite(SPI_NCS, LOW);
   for (int i = 15; i <= 0; i--)
   {
     digitalWrite(SPI_SCLK, LOW);
-    digitalWrite(SPI_MISO, bitRead(data, i));
+    digitalWrite(SPI_MISO, bitRead(protocol, i));
     delayMicroseconds(spiClkPeriodMicroseconds);
     digitalWrite(SPI_SCLK, HIGH);
     delayMicroseconds(spiClkPeriodMicroseconds);
@@ -62,26 +62,25 @@ void SPIWrite(uint16_t data)
   digitalWrite(SPI_NCS, HIGH);
 }
 
-uint8_t SPIRead(uint16_t data)
+uint8_t SPIRead(uint8_t addr)
 {
-  uint8_t addrByte = (uint8_t)(data >> 8);
-  uint8_t dataByte = (uint8_t)data;
-  char buffer[32];
-  sprintf(buffer, "addrByte = 0x%X", addrByte);
-  Serial.println(buffer);
-  sprintf(buffer, "dataByte = 0x%X", dataByte);
+  uint8_t addrByte = addr & 0b01111111;
+  // char buffer[32];
+  // sprintf(buffer, "addrByte = 0x%X", addrByte);
+  // Serial.println(buffer);
   uint8_t out = 0;
   pinMode(SPI_MISO, OUTPUT);
-  //digitalWrite(SPI_NCS, LOW);
+  digitalWrite(SPI_NCS, LOW);
 
-  for (int i = 15; i >= 8; i--) {
+  for (int i = 7; i >= 0; i--) {
     digitalWrite(SPI_SCLK, LOW);
-    digitalWrite(SPI_MISO, bitRead(data, i));
+    digitalWrite(SPI_MISO, bitRead(addrByte, i));
     delayMicroseconds(spiClkPeriodMicroseconds);
     digitalWrite(SPI_SCLK, HIGH);
     delayMicroseconds(spiClkPeriodMicroseconds);
   }
 
+  // begin receiving byte
   pinMode(SPI_MISO, INPUT);
   
   for (int i = 7; i >= 0; i--) {
@@ -95,12 +94,4 @@ uint8_t SPIRead(uint16_t data)
   pinMode(SPI_MISO, OUTPUT);
   digitalWrite(SPI_NCS, HIGH);
   return out;
-}
-
-uint16_t compileSPIProtocol(uint8_t rw, uint8_t addr, uint8_t data) {
-  uint16_t protocol = 0x0;
-  protocol = (rw << 7) | addr;
-  protocol = protocol << 8;
-  protocol = protocol | data;
-  return protocol;
 }

@@ -11,14 +11,14 @@
 
 // Definitions ///////////////////////////////////////////
 
-#define VSPI_MISO MISO
-#define VSPI_MOSI MOSI
-#define VSPI_SCLK SCK
-#define VSPI_CS   8
+// #define VSPI_MISO 37
+// #define VSPI_MOSI 35
+// #define VSPI_SCLK 36
+// #define VSPI_CS   34
 
-#if !defined(CONFIG_IDF_TARGET_ESP32)
-#define VSPI FSPI
-#endif
+// #if !defined(CONFIG_IDF_TARGET_ESP32)
+// #define VSPI FSPI
+// #endif
 
 //////////////////////////////////////////////////////////
 
@@ -41,77 +41,77 @@ void setup() {
   Serial.begin(115200);
   Serial.println("setup");
 
-  initSPI();
+  // initSPI();
 
-  // bleMouse.begin();
+  bleMouse.begin();
 
-  // while(!bleMouse.isConnected()){
-  //   delay(1000);
-  // }
+  while(!bleMouse.isConnected()){
+    delay(1000);
+  }
 
-  // delay(5000);
+  delay(5000);
 }
 
 void loop() {
-  uint8_t ret = spiCommand(vspi, compileSPIProtocol(0x00, 0x00, 0x00));
-  char buffer[64];
-  sprintf(buffer, "0x%X", ret);
-  Serial.println(buffer);
+  // uint8_t ret = spiCommand(vspi, compileSPIProtocol(0x00, 0x00, 0x00));
+  // char buffer[64];
+  // sprintf(buffer, "ret = 0x%X", ret);
+  // Serial.println(buffer);
 
-  while(1){
-    delay(3000);
-  }
-  // Serial.println("Hello");
-  // delay(1000);
-  
-  // if (test[i][2] != pressed){
-  //   pressed = test[i][2];
-  //   if (pressed){
-  //     bleMouse.press(MOUSE_LEFT);
-  //   }
-  //   else{
-  //     bleMouse.release(MOUSE_LEFT);
-  //   }
+  // while(1){
+  //   delay(3000);
   // }
-  // bleMouse.move(test[i][0], test[i][1]);
-  // i++;
-  // if (i >= testCount){ i = 0; }
-  // delay(3);
+  Serial.println("Hello");
+  delay(1000);
+  
+  if (test[i][2] != pressed){
+    pressed = test[i][2];
+    if (pressed){
+      bleMouse.press(MOUSE_LEFT);
+    }
+    else{
+      bleMouse.release(MOUSE_LEFT);
+    }
+  }
+  bleMouse.move(test[i][0], test[i][1]);
+  i++;
+  if (i >= testCount){ i = 0; }
+  delay(3);  
   
 }
 
-void initSPI() {
-  vspi = new SPIClass(VSPI);
-  vspi->begin(VSPI_SCLK, VSPI_MISO, VSPI_MOSI, VSPI_CS);
-  pinMode(vspi->pinSS(), OUTPUT);  //VSPI SS
-  digitalWrite(vspi->pinSS(), HIGH);
-}
+// void initSPI() {
+//   vspi = new SPIClass(VSPI);
+//   vspi->begin(VSPI_SCLK, VSPI_MISO, VSPI_MOSI, VSPI_CS);
+//   pinMode(vspi->pinSS(), OUTPUT);  //VSPI SS
+//   digitalWrite(vspi->pinSS(), HIGH);
+// }
 
-uint8_t spiCommand(SPIClass *spi, uint16_t data) {
-  uint16_t ret;
-  uint8_t addrByte = (uint8_t)(data >> 8);
-  uint8_t dataByte = (uint8_t)(data & 0xFF);
+// uint8_t spiCommand(SPIClass *spi, uint16_t data) {
+//   uint16_t ret;
+//   uint8_t addrByte = (uint8_t)(data >> 8);
+//   uint8_t dataByte = (uint8_t)(data);
   
-  pinMode(VSPI_MISO, OUTPUT);
-  spi->beginTransaction(SPISettings(spiClk, MSBFIRST, SPI_MODE3));
-  digitalWrite(spi->pinSS(), LOW);  //pull SS slow to prep other end for transfer
-  uint8_t addrRet = spi->transfer(addrByte);
-  pinMode(VSPI_MISO, INPUT);
-  uint8_t dataRet = spi->transfer(0);
-  //uint8_t dataRet = spi->transfer(dataByte);
-  digitalWrite(spi->pinSS(), HIGH);  //pull ss high to signify end of data transfer
-  spi->endTransaction();
-  pinMode(VSPI_MISO, OUTPUT);
+//   pinMode(VSPI_MISO, OUTPUT);
+//   spi->beginTransaction(SPISettings(spiClk, MSBFIRST, SPI_MODE3));
+//   digitalWrite(spi->pinSS(), LOW);  //pull SS slow to prep other end for transfer
+//   uint8_t addrRet = spi->transfer(addrByte);
+//   pinMode(VSPI_MISO, INPUT);
+//   uint8_t dataRet = spi->transfer(dataByte);
+//   //uint8_t dataRet = spi->transfer(dataByte);
+//   digitalWrite(spi->pinSS(), HIGH);  //pull ss high to signify end of data transfer
+//   spi->endTransaction();
+//   pinMode(VSPI_MISO, OUTPUT);
   
-  // ret = ((uint16_t)addrRet) << 8;
-  // ret |= (uint16_t)dataRet;
-  return addrRet;
-}
+//   // ret = ((uint16_t)addrRet) << 8;
+//   // ret |= (uint16_t)dataRet;
+//   return dataRet;
+// }
 
-uint16_t compileSPIProtocol(uint8_t rw, uint8_t addr, uint8_t data) {
-  uint16_t protocol = 0x0;
-  protocol = (rw << 7) | addr;
-  protocol = protocol << 8;
-  protocol = protocol | data;
-  return protocol;
-}
+// uint16_t compileSPIProtocol(uint8_t rw, uint8_t addr, uint8_t data) {
+//   uint16_t protocol = 0x0;
+//   protocol = (rw << 7) | addr;
+//   protocol = protocol << 8;
+//   protocol = protocol | data;
+//   return protocol;
+// }
