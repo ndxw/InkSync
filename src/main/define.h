@@ -1,3 +1,5 @@
+#define BANK_SWITCH 0x7F
+
 #define PRODUCT_ID1 0x00
 #define PRODUCT_ID2 0x01
 #define MOTION_STATUS 0x02

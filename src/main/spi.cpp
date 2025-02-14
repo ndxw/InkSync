@@ -1,4 +1,5 @@
 #include "spi.h"
+#include "define.h"
 
 SPI::SPI()
 {
@@ -50,6 +51,9 @@ void SPI::write(uint8_t addr, uint8_t byte)
 
 uint8_t SPI::read(uint8_t addr)
 {
+  // do not read at this address!!
+  if (addr == BANK_SWITCH) return 0;
+
   uint8_t addrByte = addr & 0x7F;
   uint8_t out = 0;
   
