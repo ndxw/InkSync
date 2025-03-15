@@ -1,0 +1,210 @@
+(export 
+  (version "E") 
+  (design 
+    (source "C:\\Users\\Arthur\\Documents\\PCB_Capstone_prototype_1_optical_S\\PCB_Capstone_prototype_1_optical_S.kicad_sch") 
+    (date "2025-01-01T20:01:24-0500") 
+    (tool "Eeschema 8.0.7") 
+    (sheet 
+      (number "1") 
+      (name "/") 
+      (tstamps "/") 
+      (title_block 
+        (title) 
+        (company) 
+        (rev) 
+        (date) 
+        (source "PCB_Capstone_prototype_1_optical_S.kicad_sch") 
+        (comment 
+          (number "1") 
+          (value "")) 
+        (comment 
+          (number "2") 
+          (value "")) 
+        (comment 
+          (number "3") 
+          (value "")) 
+        (comment 
+          (number "4") 
+          (value "")) 
+        (comment 
+          (number "5") 
+          (value "")) 
+        (comment 
+          (number "6") 
+          (value "")) 
+        (comment 
+          (number "7") 
+          (value "")) 
+        (comment 
+          (number "8") 
+          (value "")) 
+        (comment 
+          (number "9") 
+          (value ""))))) 
+  (components 
+    (comp 
+      (ref "U1") 
+      (value "~") 
+      (footprint "Library:Optical_Sensor") 
+      (fields 
+        (field 
+          (name "Footprint") "Library:Optical_Sensor") 
+        (field 
+          (name "Datasheet")) 
+        (field 
+          (name "Description"))) 
+      (libsource 
+        (lib "New_Library") 
+        (part "Optical_Sensor") 
+        (description "")) 
+      (property 
+        (name "Sheetname") 
+        (value "Root")) 
+      (property 
+        (name "Sheetfile") 
+        (value "PCB_Capstone_prototype_1_optical_S.kicad_sch")) 
+      (sheetpath 
+        (names "/") 
+        (tstamps "/")) 
+      (tstamps "17630a9d-8689-4ef0-a980-b1a0b8b2c218"))) 
+  (libparts 
+    (libpart 
+      (lib "New_Library") 
+      (part "Optical_Sensor") 
+      (fields 
+        (field 
+          (name "Reference") "U") 
+        (field 
+          (name "Value")) 
+        (field 
+          (name "Footprint")) 
+        (field 
+          (name "Datasheet")) 
+        (field 
+          (name "Description"))) 
+      (pins 
+        (pin 
+          (num "1") 
+          (name "LDP") 
+          (type "input")) 
+        (pin 
+          (num "2") 
+          (name "VDDA") 
+          (type "input")) 
+        (pin 
+          (num "3") 
+          (name "VDD") 
+          (type "input")) 
+        (pin 
+          (num "4") 
+          (name "VSS") 
+          (type "input")) 
+        (pin 
+          (num "5") 
+          (name "NCS") 
+          (type "input")) 
+        (pin 
+          (num "6") 
+          (name "Reserve") 
+          (type "input")) 
+        (pin 
+          (num "7") 
+          (name "SCLK") 
+          (type "input")) 
+        (pin 
+          (num "8") 
+          (name "SDIO") 
+          (type "input")) 
+        (pin 
+          (num "9") 
+          (name "Motion") 
+          (type "output")) 
+        (pin 
+          (num "10") 
+          (name "MFIO") 
+          (type "input"))))) 
+  (libraries 
+    (library 
+      (logical "New_Library") 
+      (uri "C:\\Users\\Arthur\\Documents\\PCB_Capstone_prototype_1_optical_S/New_Library.kicad_sym"))) 
+  (nets 
+    (net 
+      (code "1") 
+      (name "unconnected-(U1-LDP-Pad1)") 
+      (node 
+        (ref "U1") 
+        (pin "1") 
+        (pinfunction "LDP") 
+        (pintype "input"))) 
+    (net 
+      (code "2") 
+      (name "unconnected-(U1-MFIO-Pad10)") 
+      (node 
+        (ref "U1") 
+        (pin "10") 
+        (pinfunction "MFIO") 
+        (pintype "input"))) 
+    (net 
+      (code "3") 
+      (name "unconnected-(U1-Motion-Pad9)") 
+      (node 
+        (ref "U1") 
+        (pin "9") 
+        (pinfunction "Motion") 
+        (pintype "output"))) 
+    (net 
+      (code "4") 
+      (name "unconnected-(U1-NCS-Pad5)") 
+      (node 
+        (ref "U1") 
+        (pin "5") 
+        (pinfunction "NCS") 
+        (pintype "input"))) 
+    (net 
+      (code "5") 
+      (name "unconnected-(U1-Reserve-Pad6)") 
+      (node 
+        (ref "U1") 
+        (pin "6") 
+        (pinfunction "Reserve") 
+        (pintype "input"))) 
+    (net 
+      (code "6") 
+      (name "unconnected-(U1-SCLK-Pad7)") 
+      (node 
+        (ref "U1") 
+        (pin "7") 
+        (pinfunction "SCLK") 
+        (pintype "input"))) 
+    (net 
+      (code "7") 
+      (name "unconnected-(U1-SDIO-Pad8)") 
+      (node 
+        (ref "U1") 
+        (pin "8") 
+        (pinfunction "SDIO") 
+        (pintype "input"))) 
+    (net 
+      (code "8") 
+      (name "unconnected-(U1-VDD-Pad3)") 
+      (node 
+        (ref "U1") 
+        (pin "3") 
+        (pinfunction "VDD") 
+        (pintype "input"))) 
+    (net 
+      (code "9") 
+      (name "unconnected-(U1-VDDA-Pad2)") 
+      (node 
+        (ref "U1") 
+        (pin "2") 
+        (pinfunction "VDDA") 
+        (pintype "input"))) 
+    (net 
+      (code "10") 
+      (name "unconnected-(U1-VSS-Pad4)") 
+      (node 
+        (ref "U1") 
+        (pin "4") 
+        (pinfunction "VSS") 
+        (pintype "input")))))

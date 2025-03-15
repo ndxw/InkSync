@@ -1,0 +1,12 @@
+Warning: Width correction constrained.  The width correction value must be in the range of [0.000001 mm; 0.199999 mm] for the current design rules.
+Plotted to 'C:\Users\Arthur\Documents\PCB_Capstone_prototype_1_optical_S\PCB_Capstone_prototype_1_optical_S-F_Cu.gbr'.
+Plotted to 'C:\Users\Arthur\Documents\PCB_Capstone_prototype_1_optical_S\PCB_Capstone_prototype_1_optical_S-B_Cu.gbr'.
+Plotted to 'C:\Users\Arthur\Documents\PCB_Capstone_prototype_1_optical_S\PCB_Capstone_prototype_1_optical_S-F_Paste.gbr'.
+Plotted to 'C:\Users\Arthur\Documents\PCB_Capstone_prototype_1_optical_S\PCB_Capstone_prototype_1_optical_S-B_Paste.gbr'.
+Plotted to 'C:\Users\Arthur\Documents\PCB_Capstone_prototype_1_optical_S\PCB_Capstone_prototype_1_optical_S-F_Silkscreen.gbr'.
+Plotted to 'C:\Users\Arthur\Documents\PCB_Capstone_prototype_1_optical_S\PCB_Capstone_prototype_1_optical_S-B_Silkscreen.gbr'.
+Plotted to 'C:\Users\Arthur\Documents\PCB_Capstone_prototype_1_optical_S\PCB_Capstone_prototype_1_optical_S-F_Mask.gbr'.
+Plotted to 'C:\Users\Arthur\Documents\PCB_Capstone_prototype_1_optical_S\PCB_Capstone_prototype_1_optical_S-B_Mask.gbr'.
+Plotted to 'C:\Users\Arthur\Documents\PCB_Capstone_prototype_1_optical_S\PCB_Capstone_prototype_1_optical_S-Edge_Cuts.gbr'.
+Created Gerber job file 'C:\Users\Arthur\Documents\PCB_Capstone_prototype_1_optical_S\PCB_Capstone_prototype_1_optical_S-job.gbrjob'.
+Info: Done.
