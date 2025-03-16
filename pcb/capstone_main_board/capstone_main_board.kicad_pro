@@ -178,7 +178,9 @@
         }
       ],
       "track_widths": [
-        0.0
+        0.0,
+        0.2,
+        0.4
       ],
       "tuning_pattern_settings": {
         "diff_pair_defaults": {
@@ -441,7 +443,9 @@
   },
   "libraries": {
     "pinned_footprint_libs": [],
-    "pinned_symbol_libs": []
+    "pinned_symbol_libs": [
+      "Imported_sym"
+    ]
   },
   "meta": {
     "filename": "capstone_main_board.kicad_pro",
