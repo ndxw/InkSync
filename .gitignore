@@ -55,5 +55,7 @@ src/scripts/mouse_deltas.txt
 /ESP32-BLE-Mouse/
 *.rar
 *.zip
+**/*_gerbers/
+**/OldVersions
 
 

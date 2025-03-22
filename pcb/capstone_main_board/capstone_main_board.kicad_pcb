@@ -46,9 +46,9 @@
 			(plot_on_all_layers_selection 0x0000000_00000000)
 			(disableapertmacros no)
 			(usegerberextensions no)
-			(usegerberattributes yes)
-			(usegerberadvancedattributes yes)
-			(creategerberjobfile yes)
+			(usegerberattributes no)
+			(usegerberadvancedattributes no)
+			(creategerberjobfile no)
 			(dashed_line_dash_ratio 12.000000)
 			(dashed_line_gap_ratio 3.000000)
 			(svgprecision 4)
@@ -67,16 +67,16 @@
 			(psnegative no)
 			(psa4output no)
 			(plotreference yes)
-			(plotvalue yes)
+			(plotvalue no)
 			(plotfptext yes)
 			(plotinvisibletext no)
 			(sketchpadsonfab no)
-			(subtractmaskfromsilk no)
+			(subtractmaskfromsilk yes)
 			(outputformat 1)
 			(mirror no)
 			(drillshape 0)
 			(scaleselection 1)
-			(outputdirectory "C:/Users/Arthur/Documents/PCB_Capstone_prototype_1_optical_S/")
+			(outputdirectory "MCU_board_gerbers/")
 		)
 	)
 	(net 0 "")
@@ -123,7 +123,7 @@
 		(descr "Through hole straight pin header, 1x01, 2.00mm pitch, single row")
 		(tags "Through hole pin header THT 1x01 2.00mm single row")
 		(property "Reference" "J1"
-			(at 0 -2.06 360)
+			(at 0 -2.06 0)
 			(layer "F.SilkS")
 			(uuid "cde17d05-a165-4303-a699-1c5e763c313a")
 			(effects
@@ -134,7 +134,7 @@
 			)
 		)
 		(property "Value" "MFIO"
-			(at 0 2.06 360)
+			(at 0 2.06 0)
 			(layer "F.Fab")
 			(uuid "f7e5df1f-8515-4b8d-a1bc-a56859ba0f30")
 			(effects
@@ -848,7 +848,7 @@
 		(descr "Through hole straight pin header, 1x01, 2.00mm pitch, single row")
 		(tags "Through hole pin header THT 1x01 2.00mm single row")
 		(property "Reference" "J6"
-			(at 0 -2.06 360)
+			(at 0 -2.06 0)
 			(layer "F.SilkS")
 			(uuid "6f0d0bd6-0ec4-4049-b6fb-0a69642d3648")
 			(effects
@@ -859,7 +859,7 @@
 			)
 		)
 		(property "Value" "NCS"
-			(at 0 2.06 360)
+			(at 0 2.06 0)
 			(layer "F.Fab")
 			(uuid "adfc9061-0d9b-4d9f-85d7-bb9ddc290930")
 			(effects
@@ -2861,7 +2861,7 @@
 		(descr "Through hole straight pin header, 1x01, 2.00mm pitch, single row")
 		(tags "Through hole pin header THT 1x01 2.00mm single row")
 		(property "Reference" "J2"
-			(at 0 -2.06 360)
+			(at 0 -2.06 0)
 			(layer "F.SilkS")
 			(uuid "7b66ce2a-e287-40b7-91c2-ebbb886e0cf1")
 			(effects
@@ -2872,7 +2872,7 @@
 			)
 		)
 		(property "Value" "Motion"
-			(at 0 2.06 360)
+			(at 0 2.06 0)
 			(layer "F.Fab")
 			(uuid "f0efbe2f-e69b-4cc8-af6f-a06c0c05f243")
 			(effects
@@ -3265,7 +3265,7 @@
 		(descr "Through hole straight pin header, 1x01, 2.00mm pitch, single row")
 		(tags "Through hole pin header THT 1x01 2.00mm single row")
 		(property "Reference" "J3"
-			(at 0 -2.06 360)
+			(at 0 -2.06 0)
 			(layer "F.SilkS")
 			(uuid "9a2930e8-b70f-455f-9664-3a7588763a90")
 			(effects
@@ -3276,7 +3276,7 @@
 			)
 		)
 		(property "Value" "MISO"
-			(at 0 2.06 360)
+			(at 0 2.06 0)
 			(layer "F.Fab")
 			(uuid "d3aaa329-9f4a-4c6e-9f39-89fd7c2bbfb1")
 			(effects
@@ -3521,7 +3521,7 @@
 		(descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf, https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
 		(tags "capacitor")
 		(property "Reference" "C1"
-			(at 0 -1.679999 360)
+			(at 0 -1.679999 0)
 			(layer "F.SilkS")
 			(uuid "c67072ee-a288-4777-a76c-9ddc1b696502")
 			(effects
@@ -3532,7 +3532,7 @@
 			)
 		)
 		(property "Value" "10uF"
-			(at 0 1.679999 360)
+			(at 0 1.679999 0)
 			(layer "F.Fab")
 			(uuid "d7f6bebf-481c-4f5c-af68-3200c00a5600")
 			(effects
@@ -3687,7 +3687,7 @@
 			(uuid "6baa61c9-b294-408c-9a39-b7acd2f54180")
 		)
 		(fp_text user "${REFERENCE}"
-			(at 0 0 360)
+			(at 0 0 0)
 			(layer "F.Fab")
 			(uuid "5d150f90-72e0-4c9b-9d72-cc03b528d843")
 			(effects
@@ -3947,7 +3947,7 @@
 		(descr "Through hole straight pin header, 1x01, 2.00mm pitch, single row")
 		(tags "Through hole pin header THT 1x01 2.00mm single row")
 		(property "Reference" "J5"
-			(at -2.4 -2.5 360)
+			(at -2.4 -2.5 0)
 			(layer "F.SilkS")
 			(uuid "071c0a71-b3ab-4557-85fb-66a2bad6623c")
 			(effects
@@ -3958,7 +3958,7 @@
 			)
 		)
 		(property "Value" "SCLK"
-			(at 0 2.06 360)
+			(at 0 2.06 0)
 			(layer "F.Fab")
 			(uuid "d49956b3-ba14-4e69-9ab7-9a0c596e2c92")
 			(effects
@@ -4672,7 +4672,7 @@
 		(descr "Through hole straight pin header, 1x01, 2.00mm pitch, single row")
 		(tags "Through hole pin header THT 1x01 2.00mm single row")
 		(property "Reference" "J4"
-			(at -2.3 -0.8 360)
+			(at -2.3 -0.8 0)
 			(layer "F.SilkS")
 			(uuid "d222f452-0a40-45d5-9cf8-e2d6d70723d3")
 			(effects
@@ -4683,7 +4683,7 @@
 			)
 		)
 		(property "Value" "MOSI"
-			(at 0 2.06 360)
+			(at 0 2.06 0)
 			(layer "F.Fab")
 			(uuid "9a341aa9-1943-405b-95e3-dea0610d0b46")
 			(effects
@@ -6119,7 +6119,7 @@
 		(descr "Resistor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor")
 		(property "Reference" "R1"
-			(at 0 -1.17 360)
+			(at 0 -1.17 0)
 			(layer "F.SilkS")
 			(uuid "d407785d-4734-4856-bdb2-a0c15fec13b1")
 			(effects
@@ -6130,7 +6130,7 @@
 			)
 		)
 		(property "Value" "10K"
-			(at 0 1.17 360)
+			(at 0 1.17 0)
 			(layer "F.Fab")
 			(uuid "c97d119a-3b0d-42f1-92f6-4794d10e33b0")
 			(effects
@@ -6284,7 +6284,7 @@
 			(uuid "117b73a0-42fa-44d4-92c4-3ffa61432ee5")
 		)
 		(fp_text user "${REFERENCE}"
-			(at 0 0 360)
+			(at 0 0 0)
 			(layer "F.Fab")
 			(uuid "1a4e2108-1ede-4888-addd-a81b3f129905")
 			(effects
