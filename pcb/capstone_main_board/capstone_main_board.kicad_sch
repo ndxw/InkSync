@@ -3424,6 +3424,16 @@
 		)
 		(uuid "c24650b8-e7d6-4cbd-b297-97f16c661edc")
 	)
+	(label "D-"
+		(at 72.39 41.91 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "0af8ac39-e208-4f5d-8720-7f81169f4862")
+	)
 	(label "SDA/SDIO"
 		(at 87.63 73.66 0)
 		(effects
@@ -3443,6 +3453,16 @@
 			(justify left bottom)
 		)
 		(uuid "4ec63bba-3eb3-4fc9-8829-a3efad1c0b60")
+	)
+	(label "D+"
+		(at 74.93 41.91 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "57bb562a-c349-4ec1-8562-98c5612c15c1")
 	)
 	(label "SDO{slash}ADDR"
 		(at 87.63 76.2 0)
