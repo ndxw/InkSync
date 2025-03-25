@@ -24,9 +24,15 @@ void setup() {
 void loop() {
 
   uint8_t ret = SPIRead(0x01);
+  uint8_t ret_1 = SPIRead(0x00);
   char buffer[64];
+  char buffer_1[64];
   sprintf(buffer, "0x%X", ret);
+  Serial.println("Value at 0x01: ");
   Serial.println(buffer);
+  sprintf(buffer_1, "0x%X", ret_1); 
+  Serial.println("Value at 0x00: ");
+  Serial.println(buffer_1);
 
   while(1){
     delay(3000);
@@ -51,7 +57,7 @@ void SPIWrite(uint8_t addr, uint8_t data)
 
   pinMode(SPI_MISO, OUTPUT);
   digitalWrite(SPI_NCS, LOW);
-  for (int i = 15; i <= 0; i--)
+  for (int i = 15; i >= 0; i--)
   {
     digitalWrite(SPI_SCLK, LOW);
     digitalWrite(SPI_MISO, bitRead(protocol, i));

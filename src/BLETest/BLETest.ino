@@ -1,6 +1,5 @@
 #include <BleConnectionStatus.h>
-// #include "BLEMouseCustom.h"
-#include <BleMouse.h>
+#include "BleMouse.h"
 
 #include <UMS3.h>
 
@@ -36,6 +35,7 @@ void setup() {
   bleMouse.begin();
 
   while(!bleMouse.isConnected()){
+    Serial.println("There are no connection"); 
     delay(1000);
   }
 
@@ -44,40 +44,44 @@ void setup() {
 
 void loop() {
 
-  // Serial.println("Hello");
+  // bleMouse.click(MOUSE_LEFT); 
+  // Serial.println("Click Left"); 
   // delay(1000);
 
-  // uint8_t pressure = 1;
-  
-  // bleMouse.press();
+  // bleMouse.click(MOUSE_RIGHT); 
+  // Serial.println("Click Right"); 
+  // delay(1000);
 
-  // for (int i = 0; i < 5; i++)
-  // {
-  //   bleMouse.move(30, 0, pressure);
-  //   pressure += 10;
-  //   delay(1000);
-  //   bleMouse.move(0, 5, pressure);
-  // }
-
-  // bleMouse.release();
-
-  // delay(3000);
+  // bleMouse.click(MOUSE_RIGHT); 
+  // Serial.println("Click Right"); 
+  // delay(1000);
   
-  
-  if (test[i][2] != pressed){
-    pressed = test[i][2];
-    if (pressed){
-      bleMouse.press(MOUSE_LEFT);
-    }
-    else{
-      bleMouse.release(MOUSE_LEFT);
-    }
+  bleMouse.press(MOUSE_LEFT);
+
+  for (int i = 0; i < 5; i++)
+  {
+    bleMouse.move(30, 0, 0, 0);
+    pressure += 10;
+    delay(1000);
+    bleMouse.move(0, 5, 0, 0 );
   }
-  // sprintf(buffer, "move (%d, %d)\n", test[i][0], test[i][1]);
-  // Serial.println(buffer);
-  bleMouse.move(test[i][0], test[i][1]);
-  i++;
-  if (i >= testCount){ i = 0; }
-  delay(3);  
+
+  bleMouse.release(MOUSE_LEFT);
+
+  delay(3000);
   
+  
+  // if (test[i][2] != pressed){
+  //   pressed = test[i][2];
+  //   if (pressed){
+  //     bleMouse.press(MOUSE_LEFT);
+  //   }
+  //   else{
+  //     bleMouse.release(MOUSE_LEFT);
+  //   }
+  // }
+  // bleMouse.move(test[i][0], test[i][1], 0);
+  // i++;
+  // if (i >= testCount){ i = 0; }
+  // delay(3);    
 }
