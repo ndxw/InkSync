@@ -1,10 +1,20 @@
 #include <cstdint>
 #include <Arduino.h>
 
+#define OMGS3
+
+#ifdef OMGS3
+#define SPI_MISO 4
+#define SPI_MOSI 3
+#define SPI_SCLK 2
+#define SPI_NCS 1
+#else
 #define SPI_MISO 37
 #define SPI_MOSI 35
 #define SPI_SCLK 36
 #define SPI_NCS  34
+#endif
+
 #define CLK_PERIOD_MICRO 2
 
 class SPI

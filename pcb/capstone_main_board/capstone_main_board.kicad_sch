@@ -3426,6 +3426,7 @@
 	)
 	(label "D-"
 		(at 72.39 41.91 0)
+		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3436,6 +3437,7 @@
 	)
 	(label "SDA/SDIO"
 		(at 87.63 73.66 0)
+		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.2446 1.2446)
@@ -3446,6 +3448,7 @@
 	)
 	(label "SDA/SDIO"
 		(at 212.09 63.5 0)
+		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.2446 1.2446)
@@ -3456,6 +3459,7 @@
 	)
 	(label "D+"
 		(at 74.93 41.91 0)
+		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3466,6 +3470,7 @@
 	)
 	(label "SDO{slash}ADDR"
 		(at 87.63 76.2 0)
+		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.2446 1.2446)
@@ -3476,6 +3481,7 @@
 	)
 	(label "SDO{slash}ADDR"
 		(at 212.09 66.04 0)
+		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.2446 1.2446)
@@ -3486,6 +3492,7 @@
 	)
 	(label "SCL"
 		(at 212.09 60.96 0)
+		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.2446 1.2446)
@@ -3496,6 +3503,7 @@
 	)
 	(label "SCL"
 		(at 87.63 71.12 0)
+		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.2446 1.2446)

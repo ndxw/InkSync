@@ -46,9 +46,9 @@ void setup() {
   //bluetooth connection
   bleMouse.begin();
 
-  // while(!bleMouse.isConnected()){
-  //   delay(1000);
-  // }
+  while(!bleMouse.isConnected()){
+    delay(1000);
+  }
 }
 
 void loop() {
@@ -162,7 +162,7 @@ int initOpticalSensor()
 
 int readOpticalSensor(){
   // reading motion status before prostion register
-
+  return 0;
 }
 
 
