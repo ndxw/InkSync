@@ -121,7 +121,7 @@ void setup(void)
   Wire.setPins(I2C_SDA, I2C_SCL);
   
   /* Initialise the sensor */
-  if(!accel.begin())
+  if(!accel.begin(0x53))
   {
     /* There was a problem detecting the ADXL345 ... check your connections */
     Serial.println("Ooops, no ADXL345 detected ... Check your wiring!");
@@ -129,9 +129,9 @@ void setup(void)
   }
 
   /* Set the range to whatever is appropriate for your project */
-  accel.setRange(ADXL345_RANGE_16_G);
+  // accel.setRange(ADXL345_RANGE_16_G);
   // accel.setRange(ADXL345_RANGE_8_G);
-  // accel.setRange(ADXL345_RANGE_4_G);
+  accel.setRange(ADXL345_RANGE_4_G);
   // accel.setRange(ADXL345_RANGE_2_G);
   
   /* Display some basic information on this sensor */

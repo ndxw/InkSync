@@ -6,27 +6,47 @@
 #include <BleConnectionStatus.h>
 #include <BleMouse.h>
 
-SPI spi;
+#define FORCE_VP_PIN 11
+#define FORCE_VN_PIN 12
+#define NUM_READINGS 8
+
+UMS3 ums3;
+
 BleMouse bleMouse("InkSync", "The InkSync Boys", 100);
 char buffer[64];
 
+// Optical sensor -----------------------------------------
+SPI spi;
+// sensor data
 int8_t delta_xl; 
 int8_t delta_yl; 
 int8_t delta_xh; 
 int8_t delta_yh; 
-
 // full data
-int16_t delta_x; 
-int16_t delta_y; 
-
+int16_t dx = 0; 
+int16_t dy = 0; 
+// for splitting dx, dy into multiple steps
 int16_t remaining_x;
 int16_t remaining_y;
+
+// Force sensor -------------------------------------------
+int vp_readings[NUM_READINGS];
+int vn_readings[NUM_READINGS];
+int vp_total = 0;
+int vn_total = 0;
+int read_index = 0;
 
 
 void setup() {
   Serial.begin(115200);
+
+  // LED
+  ums3.begin();
+  ums3.setPixelBrightness(255/2);
+  ums3.setPixelPower(true);
+
+  // Optical sensor
   spi.init();
- 
   int status = initOpticalSensor();
   if (status == -1)
   { 
@@ -44,7 +64,10 @@ void setup() {
   //bluetooth connection
   bleMouse.begin();
   while(!bleMouse.isConnected()){
-    delay(1000);
+    ums3.setPixelColor(0, 0, 255);
+    delay(500);
+    ums3.setPixelColor(0, 0, 0);
+    delay(500);
   }
 }
 
@@ -53,50 +76,28 @@ void loop() {
   Serial.println("Entered"); 
   uint8_t ret = spi.read(WRITE_PROTECT);
   sprintf(buffer, "WP = 0x%X", ret);
-  Serial.println(buffer);
+  Serial.println(buffer);  
 
-  // Serial.println("MOTION_STATUS"); 
-  // Serial.println(spi.read(MOTION_STATUS)); 
-    
-  // read opreation
-  if (((spi.read(MOTION_STATUS)) >> 7) == 1){
-    delta_xl = spi.read(DELTA_XL);
-    delta_yl = spi.read(DELTA_YL);
-    delta_xh = spi.read(DELTA_XH); 
-    delta_yh = spi.read(DELTA_YH); 
+  readOpticalSensor();
+  // int force_out = readForceSensor(); // not verified!!
+  // read accelerometer
 
-    delta_x = (int16_t)(((delta_xh << 8) | (delta_xl & 0xFF)));
-    delta_y = (int16_t)(((delta_yh << 8) | (delta_yl & 0xFF)));
-
-    Serial.println("x movement"); 
-    Serial.println(delta_xl); 
-    Serial.println("y movement"); 
-    Serial.println(delta_yl); 
-
-    remaining_x = delta_x;
-    remaining_y = delta_y;
+  remaining_x = dx;
+  remaining_y = dy;
   
   // Loop until both X and Y movements are fully processed.
   while (remaining_x != 0 || remaining_y != 0) {
     int8_t stepX, stepY;
 
     // Break X movement into an 8-bit step.
-    if (remaining_x > 127) {
-      stepX = 127;
-    } else if (remaining_x < -128) {
-      stepX = -128;
-    } else {
-      stepX = (int8_t)remaining_x;
-    }
+    if (remaining_x > 127)        { stepX = 127; }
+    else if (remaining_x < -128)  { stepX = -128; } 
+    else                          { stepX = (int8_t)remaining_x; }
 
     // Break Y movement into an 8-bit step.
-    if (remaining_y > 127) {
-      stepY = 127;
-    } else if (remaining_y < -128) {
-      stepY = -128;
-    } else {
-      stepY = (int8_t)remaining_y;
-    }
+    if (remaining_y > 127)        { stepY = 127; } 
+    else if (remaining_y < -128)  { stepY = -128; } 
+    else                          { stepY = (int8_t)remaining_y; }
 
     // Serial.println("stepX"); 
     // Serial.println(stepX); 
@@ -104,7 +105,7 @@ void loop() {
     // Serial.println(stepY); 
 
     //Send the move command with the computed step values.
-    bleMouse.press(MOUSE_LEFT);
+    //bleMouse.press(MOUSE_LEFT);
     bleMouse.move(stepX, stepY, 0, 0);
 
     // Update the remaining movement.
@@ -112,14 +113,7 @@ void loop() {
     remaining_y -= stepY;
     
 
-    }
   }
-  else if (((spi.read(MOTION_STATUS)) >> 7) == 0){
-    Serial.println("Thre are no direction detected"); 
-    bleMouse.release(MOUSE_LEFT);
-    
-  }
-    
 }
 
 /*
@@ -158,8 +152,43 @@ int initOpticalSensor()
 
 
 int readOpticalSensor(){
-  // reading motion status before prostion register
+  // reading motion status before position register
+  if (((spi.read(MOTION_STATUS)) >> 7) == 1)
+  {
+    delta_xl = spi.read(DELTA_XL);
+    delta_yl = spi.read(DELTA_YL);
+    delta_xh = spi.read(DELTA_XH); 
+    delta_yh = spi.read(DELTA_YH); 
+
+    dx = -(((int16_t)delta_xh << 8) | delta_xl);
+    dy = -(((int16_t)delta_yh << 8) | delta_yl);
+
+    // Serial.println("x movement"); 
+    // Serial.println(dx); 
+    // Serial.println("y movement"); 
+    // Serial.println(dy);
+  }
+  else
+  { // if (((spi.read(MOTION_STATUS)) >> 7) == 0){
+    Serial.println("Thre are no direction detected"); 
+    dx = 0;
+    dy = 0;
+    //bleMouse.release(MOUSE_LEFT);
+  }
   return 0;
+}
+
+int readForceSensor(){
+  vp_total -= vp_readings[read_index];
+  vn_total -= vn_readings[read_index];
+  vp_readings[read_index] = analogRead(FORCE_VP_PIN);
+  vn_readings[read_index] = analogRead(FORCE_VN_PIN);
+  vp_total += vp_readings[read_index];
+  vn_total += vn_readings[read_index];
+  read_index++;
+  if (read_index >= NUM_READINGS) read_index = 0;
+
+  return (vp_total >> 3) - (vn_total >> 3);
 }
 
 
