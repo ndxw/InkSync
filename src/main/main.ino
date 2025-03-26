@@ -26,11 +26,8 @@ int16_t remaining_y;
 void setup() {
   Serial.begin(115200);
   spi.init();
-
-  Serial.println("Process of testing begins"); 
+ 
   int status = initOpticalSensor();
-  Serial.println(status);
-  Serial.println("YESSS"); 
   if (status == -1)
   { 
     Serial.println("Incorrect product ID during initialization!"); 
@@ -38,14 +35,14 @@ void setup() {
   }
   else if (status != 0)
   { 
-    sprintf(buffer, "Initialization failed at step %d", status);
+    sprintf(buffer, "Initialization failed at step %d!", status);
     Serial.println(buffer);
     ESP.restart();
   }
+  Serial.println("Optical sensor initialization successful");
 
   //bluetooth connection
   bleMouse.begin();
-
   while(!bleMouse.isConnected()){
     delay(1000);
   }
