@@ -201,7 +201,7 @@ void BLEMouseCustom::taskServer(void* pvParameter) {
   bleMouseInstance->onStarted(pServer);
 
   BLEAdvertising *pAdvertising = pServer->getAdvertising();
-  pAdvertising->setAppearance(HID_MOUSE);
+  pAdvertising->setAppearance(HID_DIGITAL_PEN);
   pAdvertising->addServiceUUID(bleMouseInstance->hid->hidService()->getUUID());
   pAdvertising->start();
   bleMouseInstance->hid->setBatteryLevel(bleMouseInstance->batteryLevel);
