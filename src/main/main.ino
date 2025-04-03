@@ -1,10 +1,12 @@
+#include <dummy.h>
+
 #include <UMS3.h>
 
 #include "spi.h"
 #include "define.h"
 
 #include <BleConnectionStatus.h>
-#include <BleMouse.h>
+#include <BLEMouseCustom.h>
 
 #define FORCE_VP_PIN 11
 #define FORCE_VN_PIN 12
@@ -12,7 +14,7 @@
 
 UMS3 ums3;
 
-BleMouse bleMouse("InkSync", "The InkSync Boys", 100);
+BLEMouseCustom bleMouseCustom("InkSync", "The InkSync Boys", 100);
 char buffer[64];
 
 // Optical sensor -----------------------------------------
@@ -30,16 +32,33 @@ int16_t remaining_x;
 int16_t remaining_y;
 
 // Force sensor -------------------------------------------
-int vp_readings[NUM_READINGS];
-int vn_readings[NUM_READINGS];
-int vp_total = 0;
-int vn_total = 0;
+int8_t vp_readings[NUM_READINGS];
+int8_t vn_readings[NUM_READINGS];
+int16_t vp_total = 0;
+int16_t vn_total = 0;
+int16_t vout=0;
 int read_index = 0;
-int8_t force; 
+char print_buffer[64];
+//Position
+int16_t abs_x = 0;
+int16_t abs_y = 0;
+uint8_t highByte_x = 0;
+uint8_t lowByte_x = 0;
+uint8_t highByte_y = 0;
+uint8_t lowByte_y = 0;
+
+int count = 0;
 
 
 void setup() {
   Serial.begin(115200);
+
+  //Force Sensor
+  for (int i = 0; i < NUM_READINGS; i++)
+  {
+    vp_readings[i] = 0;
+    vn_readings[i] = 0;
+  }
 
   // LED
   ums3.begin();
@@ -63,28 +82,31 @@ void setup() {
   Serial.println("Optical sensor initialization successful");
 
   //bluetooth connection
-  bleMouse.begin();
-  while(!bleMouse.isConnected()){
+  bleMouseCustom.begin();
+  while(!bleMouseCustom.isConnected()){
     ums3.setPixelColor(0, 0, 255);
     delay(500);
     ums3.setPixelColor(0, 0, 0);
     delay(500);
   }
+  //moved to 0,0
+  //bleMouseCustom.move(0, 0, 0);
 }
 
 void loop() {
   //use WRITE_PROTECT register to test spi.write()
-  Serial.println("Entered"); 
-  uint8_t ret = spi.read(WRITE_PROTECT);
-  sprintf(buffer, "WP = 0x%X", ret);
-  Serial.println(buffer);  
+  //Serial.println("Entered"); 
+  //uint8_t ret = spi.read(WRITE_PROTECT);
+  //sprintf(buffer, "WP = 0x%X", ret);
+  //Serial.println(buffer);  
 
   readOpticalSensor();
-  // int force_out = readForceSensor(); // not verified!!
+  int16_t force_out = readForceSensor(); // not verified!!
   // read accelerometer
 
   remaining_x = dx;
   remaining_y = dy;
+  
   
   // Loop until both X and Y movements are fully processed.
   while (remaining_x != 0 || remaining_y != 0) {
@@ -106,22 +128,50 @@ void loop() {
     // Serial.println(stepY); 
 
     //Send the move command with the computed step values.
-    //bleMouse.press(MOUSE_LEFT);
-    force = readForceSensor(); 
+    //bleMouseCustom.press(MOUSE_LEFT);
     
-    if (force > -15){
-      bleMouse.press(MOUSE_LEFT);
-    }
-    else{
-      bleMouse.release(MOUSE_LEFT);
-    }
-    bleMouse.move(stepX, stepY, 0, 0);
-
     // Update the remaining movement.
     remaining_x -= stepX;
     remaining_y -= stepY;
     
+  //artificial smoothing to slow mouse speed due to small increments
+  if(count>10){
+  //increase count for absolute position
+    abs_x += stepX;
+    abs_y += stepY;
+    count=0;
+  } else {
+    count++;
+  }
 
+  //virtual boundaries
+  if(abs_x > 255){
+    abs_x = 255;
+  }
+  if(abs_x < 0){
+    abs_x = 0;
+  }
+  if(abs_y > 255){
+    abs_y = 255;
+  }
+  if(abs_y < 0){
+    abs_y = 0;
+  }
+
+  /* IGNORE */
+  //test to split x and y into two uint8_t to be sent over BLE
+  //uint8_t highByte_x = (abs_x >> 8) & 0xFF;  // mask most sig byte with 255 to remove least sig
+  //uint8_t lowByte_x = abs_x & 0xFF;           // mask least sig byte with 255 to remove most sig
+  //uint8_t highByte_y = (abs_y >> 8) & 0xFF;  
+  //uint8_t lowByte_y = abs_y & 0xFF;           
+  
+  //add force condition to not send position again so when pen is off table it doesnt move
+  bleMouseCustom.move(abs_x, abs_y, force_out);
+  
+  
+  
+  //bleMouseCustom.move(highByte_x, lowByte_x, highByte_y, lowByte_y, force_out);
+  //Serial.println(force_out);
   }
 }
 
@@ -142,23 +192,8 @@ int initOpticalSensor()
     return -1; 
     }
 
-  uint8_t initAddresses[] = {0x7F,0x05,0x09,0x51,0x0D,0x0E,0x07,0x1B,0x2E,0x32,0x33, \
-                             0x34,0x36,0x38,0x39,0x3E,0x44,0x4A,0x4F,0x52,0x57,0x59,\
-                             0x5B,0x5C,0x7F,0x00,0x07,0x20,0x21,0x23,0x2F,0x37,0x3B,\
-                             0x43,0x59,0x5A,0x5C,0x5E,0x7F,0x51,0x7F,0x05,0x06,0x07,\
-                             0x08,0x7F,0x05,0x53,0x7F,0x00,0x09,0x0A,0x0B,0x0C,0x0D,\
-                             0x12,0x14,0x16,0x18,0x19,0x1A,0x1B,0x20,0x22,0x24,0x26,\
-                             0x2F,0x30,0x3D,0x3E,0x7F,0x34,0x7F,0x00,0x02,0x03,0x06,\
-                             0x0F,0x14,0x35,0x36,0x46,0x47,0x4B,0x7F,0x09,0x4B,0x7F,0x09};
-                             
-  uint8_t initValues[]    = {0x00,0xA8,0x5A,0x06,0x1F,0x1F,0x00,0x42,0x40,0x40,0x02,\
-                             0x00,0xE0,0xA0,0x01,0x14,0x02,0xE0,0x02,0x0D,0x03,0x03,\
-                             0x03,0xFF,0x01,0x25,0x78,0x00,0x40,0x00,0x64,0x30,0x64,\
-                             0x0A,0x01,0x01,0x04,0x04,0x02,0x02,0x03,0x0C,0x0C,0x0C,\
-                             0x0C,0x04,0x01,0x08,0x05,0x02,0x01,0x1C,0x24,0x1C,0x24,\
-                             0x08,0x02,0x02,0x1C,0x24,0x1C,0x24,0x08,0x02,0x02,0x88,\
-                             0x7C,0x07,0x00,0x98,0x06,0x03,0x07,0x01,0xC4,0x13,0x0C,\
-                             0x0A,0x02,0x39,0x3F,0x03,0x0F,0x97,0x00,0x00,0x97,0x00,0x00};
+  uint8_t initAddresses[] = {0x7F,0x05,0x09,0x51,0x0D,0x0E,0x07,0x1B,0x2E,0x32,0x33,0x34,0x36,0x38,0x39,0x3E,0x44,0x4A,0x4F,0x52,0x57,0x59,0x5B,0x5C,0x7F,0x00,0x07,0x20,0x21,0x23,0x2F,0x37,0x3B,0x43,0x59,0x5A,0x5C,0x5E,0x7F,0x51,0x7F,0x05,0x06,0x07,0x08,0x7F,0x05,0x53,0x7F,0x00,0x09,0x0A,0x0B,0x0C,0x0D,0x12,0x14,0x16,0x18,0x19,0x1A,0x1B,0x20,0x22,0x24,0x26,0x2F,0x30,0x3D,0x3E,0x7F,0x34,0x7F,0x00,0x02,0x03,0x06,0x0F,0x14,0x35,0x36,0x46,0x47,0x4B,0x7F,0x09,0x4B,0x7F,0x09};
+  uint8_t initValues[]    = {0x00,0xA8,0x5A,0x06,0x1F,0x1F,0x00,0x42,0x40,0x40,0x02,0x00,0xE0,0xA0,0x01,0x14,0x02,0xE0,0x02,0x0D,0x03,0x03,0x03,0xFF,0x01,0x25,0x78,0x00,0x40,0x00,0x64,0x30,0x64,0x0A,0x01,0x01,0x04,0x04,0x02,0x02,0x03,0x0C,0x0C,0x0C,0x0C,0x04,0x01,0x08,0x05,0x02,0x01,0x1C,0x24,0x1C,0x24,0x08,0x02,0x02,0x1C,0x24,0x1C,0x24,0x08,0x02,0x02,0x88,0x7C,0x07,0x00,0x98,0x06,0x03,0x07,0x01,0xC4,0x13,0x0C,0x0A,0x02,0x39,0x3F,0x03,0x0F,0x97,0x00,0x00,0x97,0x00,0x00};
 
   for (int i = 0; i < 86; i++)
   {
@@ -191,13 +226,16 @@ int readOpticalSensor(){
     // Serial.println(dx); 
     // Serial.println("y movement"); 
     // Serial.println(dy);
+
+    //dx = (abs(dx)) > 1 ? dx : 0;
+    //dy = (abs(dy)) > 1 ? dy : 0;
   }
   else
   { // if (((spi.read(MOTION_STATUS)) >> 7) == 0){
-    Serial.println("Thre are no direction detected"); 
+    //Serial.println("Thre are no direction detected"); 
     dx = 0;
     dy = 0;
-    //bleMouse.release(MOUSE_LEFT);
+    //bleMouseCustom.release(MOUSE_LEFT);
   }
   return 0;
 }
@@ -205,14 +243,20 @@ int readOpticalSensor(){
 int readForceSensor(){
   vp_total -= vp_readings[read_index];
   vn_total -= vn_readings[read_index];
-  vp_readings[read_index] = analogRead(FORCE_VP_PIN);
-  vn_readings[read_index] = analogRead(FORCE_VN_PIN);
+  vp_readings[read_index] = analogRead(FORCE_VN_PIN);
+  vn_readings[read_index] = analogRead(FORCE_VP_PIN);
   vp_total += vp_readings[read_index];
   vn_total += vn_readings[read_index];
   read_index++;
   if (read_index >= NUM_READINGS) read_index = 0;
 
-  return (vp_total >> 3) - (vn_total >> 3);
+  //unpressed is around -2
+  //pressed goes to 15
+
+  //normalize to range 0 to 255
+  vout = ((((vp_total/8) - (vn_total/8))-(-15.0))/30.0)*255.0;
+  //return vout;
+  return vout;
 }
 
 
