@@ -19,60 +19,81 @@
   static const char* LOG_TAG = "BLEDevice";
 #endif
 
-// // Mouse Report (Report ID 1)
-  // 0x05, 0x01,        // USAGE_PAGE (Generic Desktop)
-  // 0x09, 0x02,        // USAGE (Mouse)
-  // 0xa1, 0x01,        // COLLECTION (Application)
-  // 0x09, 0x01,        // USAGE (Pointer)
-  // 0xa1, 0x00,        // COLLECTION (Physical)
-  // USAGE(1),            0x30, //     USAGE (X)
-  // LOGICAL_MINIMUM(1),  0x00, //     LOGICAL_MINIMUM (0)
-  // LOGICAL_MAXIMUM(2),  0xff,  //     LOGICAL_MAXIMUM (1920)
-  // REPORT_SIZE(1),      0x08, //     REPORT_SIZE (8)
-  // REPORT_COUNT(1),     0x01, //     REPORT_COUNT (1)
-  // HIDINPUT(1),         0x06, //     INPUT (Data, Variable, Relative) ;
-
-  // USAGE(1),            0x31, //     USAGE (Y)
-  // LOGICAL_MAXIMUM(2),  0xff,  //     LOGICAL_MAXIMUM (1080)
-  // LOGICAL_MINIMUM(1),  0x00, //     LOGICAL_MINIMUM (0)
-  // REPORT_SIZE(1),      0x08, //     REPORT_SIZE (8)
-  // REPORT_COUNT(1),     0x01, //     REPORT_COUNT (1)
-  // HIDINPUT(1),         0x06, //     INPUT (Data, Variable, Relative) ;
-  // END_COLLECTION(0),         //   END_COLLECTION
-  // END_COLLECTION(0)          // END_COLLECTION
-
 static const uint8_t _hidReportDescriptor[] = {
-  USAGE_PAGE(1),       0x0d, // USAGE_PAGE (Digitizers)
-  USAGE(1),            0x02, // USAGE (Pen)
-  COLLECTION(1),       0x01, // COLLECTION (Application)
-  USAGE(1),            0x20, //   USAGE (Stylus)
-  COLLECTION(1),       0x00, //   COLLECTION (Physical)
-  //-------------------------------------------------- 
+//Mouse
+//-------------------------------------------------- Start Collections
+  0x05, 0x01,        // USAGE_PAGE (Generic Desktop)
+  0x09, 0x02,        // USAGE (Mouse)
+  0xa1, 0x01,        // COLLECTION (Application)
+  0x09, 0x01,        // USAGE (Pointer)
+  0xa1, 0x00,        // COLLECTION (Physical)
+  0x85, 0x01,        // Report ID (1)
+//-------------------------------------------------- Mouse Buttons
+  0x05, 0x09,        // Usage Page (Button)
+  0x19, 0x01,        // USAGE_MINIMUM (Button 1)
+  0x29, 0x03,        // USAGE_MAXIMUM (Button 3)
+  0x15, 0x00,        // Logical Minimum (0)
+  0x25, 0x01,        // Logical Maximum (1)
+  0x75, 0x01,        // Report Size (1)
+  0x95, 0x03,        // Report Count (3)
+  0x81, 0x02,        // Input (Data, Variable, Absolute)
+//-------------------------------------------------- Bit Padding  
+  0x05, 0x01,                //     USAGE_PAGE (Generic Desktop)
+  REPORT_SIZE(1),      0x05, //     REPORT_SIZE (7) 
+  REPORT_COUNT(1),     0x01, //     REPORT_COUNT (1)
+  HIDINPUT(1),         0x03, //     INPUT (Constant, Variable, Absolute) ;7 bit padding
+//-------------------------------------------------- X
+  USAGE(1),            0x30, //     USAGE (X)
+  LOGICAL_MINIMUM(1),  0x00, //     LOGICAL_MINIMUM (0)
+  LOGICAL_MAXIMUM(2),  0xff, 0x00,//LOGICAL_MAXIMUM (255)
+  REPORT_SIZE(1),      0x08, //     REPORT_SIZE (8)
+  REPORT_COUNT(1),     0x01, //     REPORT_COUNT (1)
+  HIDINPUT(1),         0x02, //     INPUT (Data, Variable, Relative) ;
+//-------------------------------------------------- Y
+  USAGE(1),            0x31, //     USAGE (Y)
+  LOGICAL_MINIMUM(1),  0x00,//      LOGICAL_MINIMUM (0)
+  LOGICAL_MAXIMUM(2),  0xff, 0x00,//LOGICAL_MAXIMUM (1920)
+  REPORT_SIZE(1),      0x08, //     REPORT_SIZE (8)
+  REPORT_COUNT(1),     0x01, //     REPORT_COUNT (1)
+  HIDINPUT(1),         0x02, //     INPUT (Data, Variable, Relative) ;
+//--------------------------------------------------  End Collections
+  END_COLLECTION(0),         //     END_COLLECTION
+  END_COLLECTION(0),         //     END_COLLECTION
+//-------------------------------------------------- 
+//Pen
+//-------------------------------------------------- Start Collections
+  USAGE_PAGE(1),       0x0d, //     USAGE_PAGE (Digitizers)
+  USAGE(1),            0x02, //     USAGE (Pen)
+  COLLECTION(1),       0x01, //     COLLECTION (Application)
+  USAGE(1),            0x20, //     USAGE (Stylus)
+  COLLECTION(1),       0x00, //     COLLECTION (Physical)
+  0x85, 0x02,                //     Report ID (2)
+  //-------------------------------------------------- Tip Switch (Hover or pen down)
   USAGE(1),            0x42, //     USAGE (Tip Switch)
   LOGICAL_MINIMUM(1),  0x00, //     LOGICAL_MINIMUM (0)
   LOGICAL_MAXIMUM(1),  0x01, //     LOGICAL_MAXIMUM (1)
   REPORT_SIZE(1),      0x01, //     REPORT_SIZE (1)
   REPORT_COUNT(1),     0x01, //     REPORT_COUNT (1)
   HIDINPUT(1),         0x02, //     INPUT (Data, Variable, Absolute)
-  // ------------------------------------------------- Padding
+  // ------------------------------------------------- Bit Padding
   REPORT_SIZE(1),      0x07, //     REPORT_SIZE (7) 
   REPORT_COUNT(1),     0x01, //     REPORT_COUNT (1)
-  HIDINPUT(1),         0x03, //     INPUT (Constant, Variable, Absolute) ;7 bit padding
-  // ------------------------------------------------- X/Y position, Wheel
+  HIDINPUT(1),         0x03, //     INPUT (Constant, Variable, Absolute)
+  // ------------------------------------------------- X
   USAGE_PAGE(1),       0x01, //     USAGE_PAGE (Generic Desktop)
   USAGE(1),            0x30, //     USAGE (X)
   LOGICAL_MINIMUM(1),  0x00, //     LOGICAL_MINIMUM (0)
-  LOGICAL_MAXIMUM(2),  0xff, 0x00, //     LOGICAL_MAXIMUM (1920)
+  LOGICAL_MAXIMUM(2),  0xff, 0x00,//LOGICAL_MAXIMUM (1920)
   REPORT_SIZE(1),      0x08, //     REPORT_SIZE (8)
   REPORT_COUNT(1),     0x01, //     REPORT_COUNT (1)
-  HIDINPUT(1),         0x06, //     INPUT (Data, Variable, Relative) ;
-
+  HIDINPUT(1),         0x06, //     INPUT (Data, Variable, Relative)
+// ------------------------------------------------- Y
   USAGE(1),            0x31, //     USAGE (Y)
-  LOGICAL_MAXIMUM(2),  0xff, 0x00,  //     LOGICAL_MAXIMUM (1080)
+  LOGICAL_MAXIMUM(2),  0xff, 0x00,//LOGICAL_MAXIMUM (1080)
   LOGICAL_MINIMUM(1),  0x00, //     LOGICAL_MINIMUM (0)
   REPORT_SIZE(1),      0x08, //     REPORT_SIZE (8)
   REPORT_COUNT(1),     0x01, //     REPORT_COUNT (1)
-  HIDINPUT(1),         0x06, //     INPUT (Data, Variable, Relative) ;
+  HIDINPUT(1),         0x06, //     INPUT (Data, Variable, Relative)
   // ------------------------------------------------- Pen pressure
   USAGE_PAGE(1),       0x0d, //     USAGE PAGE (Digitizers)
   USAGE(1),            0x30, //     USAGE (Barrel pressure)
@@ -81,11 +102,10 @@ static const uint8_t _hidReportDescriptor[] = {
   REPORT_SIZE(1),      0x08, //     REPORT_SIZE (8)
   REPORT_COUNT(1),     0x01, //     REPORT_COUNT (1)
   HIDINPUT(1),         0x02, //     INPUT (Data, Variable, Absolute)
-  // -------------------------------------------------
+  // ------------------------------------------------- End Collections
   END_COLLECTION(0),         //   END_COLLECTION
   END_COLLECTION(0)          // END_COLLECTION
 };
-
 
 BLEMouseCustom::BLEMouseCustom(std::string deviceName, std::string deviceManufacturer, uint8_t batteryLevel) : 
     _buttons(0),
@@ -102,65 +122,70 @@ void BLEMouseCustom::begin(void)
   xTaskCreate(this->taskServer, "server", 20000, (void *)this, 5, NULL);
 }
 
-void BLEMouseCustom::end(void)
-{
-}
+void BLEMouseCustom::end(void){}
 
-void BLEMouseCustom::click(uint8_t b)
-{
-  
-}
+void BLEMouseCustom::click(uint8_t b){}
 
-void BLEMouseCustom::move(uint8_t x, uint8_t y, unsigned char pressure)
-
-{
+void BLEMouseCustom::move(int8_t x_mouse, int8_t y_mouse, unsigned char click){
   if (this->isConnected())
   {
     uint8_t m[4];
-    m[0] = (pressure>(unsigned char)120) ? 1 : 0;
+    m[0] = click;
+    m[1] = x_mouse;
+    m[2] = y_mouse;
 
-    //hard-code to split pressure into bigger range
-    if(pressure<140){
-      pressure = 0;
-    } else if (pressure<160){
-      pressure = 50;
-    } else if (pressure<180){
-      pressure = 100;
-    } else if (pressure<200){
-      pressure = 150;
-    }
-
-
-    m[1] = x;
-    m[2] = y;
-    m[3] = pressure;
     this->inputMouse->setValue(m,4);
     this->inputMouse->notify();
 
   }
 }
 
-void BLEMouseCustom::buttons(uint8_t b)
+void BLEMouseCustom::pen(uint8_t x, uint8_t y, unsigned char pressure)
+
 {
-  
+  if (this->isConnected())
+  {
+    uint8_t p[4];
+    p[0] = (pressure>(unsigned char)140) ? 1 : 0;
+
+    //Issue with pressure being different as pen tip wears out, so narmalizing varies
+    //hard-code to split pressure into bigger range
+    if(pressure<140){
+      pressure = 0;
+    } else if (pressure<150){
+      pressure = 25;
+    } else if (pressure<160){
+      pressure = 50;
+    } else if (pressure<170){
+      pressure = 75;  
+    } else if (pressure<180){
+      pressure = 100;
+    } else if (pressure<190){
+      pressure = 125;
+    } else if (pressure<200){
+      pressure = 150;
+    } else if (pressure<210){
+      pressure = 175;
+    } else if (pressure<220){
+      pressure = 200;
+    }
+
+    p[1] = x;
+    p[2] = y;
+    p[3] = pressure;
+    this->inputPen->setValue(p,4);
+    this->inputPen->notify();
+  }
 }
 
-void BLEMouseCustom::press(uint8_t b)
-{
-  buttons(_buttons | b);
-}
+//Unused, but here to match BLEMouse library used
+void BLEMouseCustom::buttons(uint8_t b){}
 
-void BLEMouseCustom::release(uint8_t b)
-{
-  buttons(_buttons & ~b);
-}
+void BLEMouseCustom::press(uint8_t b){}
 
-bool BLEMouseCustom::isPressed(uint8_t b)
-{
-  if ((b & _buttons) > 0)
-    return true;
-  return false;
-}
+void BLEMouseCustom::release(uint8_t b){}
+
+bool BLEMouseCustom::isPressed(uint8_t b){}
 
 bool BLEMouseCustom::isConnected(void) {
   return this->connectionStatus->connected;
@@ -174,58 +199,53 @@ void BLEMouseCustom::setBatteryLevel(uint8_t level) {
 
 void BLEMouseCustom::taskServer(void* pvParameter) {
   BLEMouseCustom* bleMouseInstance = (BLEMouseCustom *) pvParameter; //static_cast<BLEMouseCustom *>(pvParameter);
-  //BLEMouseCustom* blePenInstance = (BLEMouseCustom *) pvParameter;
+  
   //Set device name
   BLEDevice::init(bleMouseInstance->deviceName.c_str());
+  
+  //Max clock speed
   BLEDevice::setMTU(512);
+
+  //Max power usage
   BLEDevice::setPower(ESP_PWR_LVL_P9,ESP_BLE_PWR_TYPE_DEFAULT);
-  //BLEDevice::init(blePenInstance->deviceName.c_str());
+
   //Create server for advertising device
   BLEServer *pServer = BLEDevice::createServer();
   pServer->setCallbacks(bleMouseInstance->connectionStatus);
 
-  //Create mouse device and set HID
+  //Create mouse and pen device and set HIDs to tell PC which device corresponds to which input report
   bleMouseInstance->hid = new BLEHIDDevice(pServer);
-  bleMouseInstance->inputMouse = bleMouseInstance->hid->inputReport(0); // <-- input REPORTID from report map
+  bleMouseInstance->inputMouse = bleMouseInstance->hid->inputReport(1); // <-- input REPORTID from report map
+  bleMouseInstance->inputPen = bleMouseInstance->hid->inputReport(2); // <-- input REPORTID from report map
   bleMouseInstance->connectionStatus->inputMouse = bleMouseInstance->inputMouse;
-
-  //Create pen device and set HID
-  //blePenInstance->hid = new BLEHIDDevice(pServer);
-  //blePenInstance->inputMouse = blePenInstance->hid->inputReport(1); // <-- input REPORTID from report map
-  //blePenInstance->connectionStatus->inputMouse = blePenInstance->inputMouse;
+  bleMouseInstance->connectionStatus->inputPen = bleMouseInstance->inputPen;
   
   //Set device manufacturer name
   bleMouseInstance->hid->manufacturer()->setValue(bleMouseInstance->deviceManufacturer.c_str());
-  //blePenInstance->hid->manufacturer()->setValue(blePenInstance->deviceManufacturer.c_str());
 
-  //pnp(device_id, vendor_id, product_id, device_version)
-  //hidinfo(country, device_id)
-  bleMouseInstance->hid->pnp(0x05, 0xe502, 0xa111, 0x0210);
+  //Set info for each device
+  //Usage: pnp(device_id, vendor_id, product_id, device_version)
+  //Usage: hidinfo(country, device_id)
+  bleMouseInstance->hid->pnp(0x02, 0xe502, 0xa111, 0x0210);
+  bleMouseInstance->hid->hidInfo(0x00,0x02);
+  bleMouseInstance->hid->pnp(0x05, 0xe503, 0xa112, 0x0210);
   bleMouseInstance->hid->hidInfo(0x00,0x05);
-  
-  //blePenInstance->hid->pnp(0x05, 0xe503, 0xa112, 0x0210);
-  //blePenInstance->hid->hidInfo(0x00,0x05);
 
   //setup bluetooth security for reconnection
   BLESecurity *pSecurity = new BLESecurity();
-
   pSecurity->setAuthenticationMode(ESP_LE_AUTH_BOND);
 
   //Set hid_report_descriptor for both devices
   bleMouseInstance->hid->reportMap((uint8_t*)_hidReportDescriptor, sizeof(_hidReportDescriptor));
   bleMouseInstance->hid->startServices();
 
-  //blePenInstance->hid->reportMap((uint8_t*)_hidReportDescriptor, sizeof(_hidReportDescriptor));
-  //blePenInstance->hid->startServices();
-
   bleMouseInstance->onStarted(pServer);
-  //blePenInstance->onStarted(pServer);
 
   //start advertising device
   BLEAdvertising *pAdvertising = pServer->getAdvertising();
   pAdvertising->setAppearance(HID_DIGITAL_PEN);
+
   //need to get UUID so PC knows what type of device it is
-  //pAdvertising->addServiceUUID(blePenInstance->hid->hidService()->getUUID());
   pAdvertising->addServiceUUID(bleMouseInstance->hid->hidService()->getUUID());
   pAdvertising->start();
   bleMouseInstance->hid->setBatteryLevel(bleMouseInstance->batteryLevel);

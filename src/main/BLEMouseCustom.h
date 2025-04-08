@@ -20,6 +20,7 @@ private:
   BleConnectionStatus* connectionStatus;
   BLEHIDDevice* hid;
   BLECharacteristic* inputMouse;
+  BLECharacteristic* inputPen;
   void buttons(uint8_t b);
   void rawAction(uint8_t msg[], char msgSize);
   static void taskServer(void* pvParameter);
@@ -28,7 +29,8 @@ public:
   void begin(void);
   void end(void);
   void click(uint8_t b = MOUSE_LEFT);
-  void move(uint8_t x, uint8_t y, unsigned char pressure);
+  void move(int8_t x_mouse, int8_t y_mouse, unsigned char click);
+  void pen(uint8_t x, uint8_t y, unsigned char pressure);
   void press(uint8_t b = MOUSE_LEFT);   // press LEFT by default
   void release(uint8_t b = MOUSE_LEFT); // release LEFT by default
   bool isPressed(uint8_t b = MOUSE_LEFT); // check LEFT by default

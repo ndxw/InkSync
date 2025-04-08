@@ -1,10 +1,7 @@
 #include <dummy.h>
-
 #include <UMS3.h>
-
 #include "spi.h"
 #include "define.h"
-
 #include <BleConnectionStatus.h>
 #include <BLEMouseCustom.h>
 
@@ -27,32 +24,25 @@ int8_t delta_yh;
 // full data
 int16_t dx = 0; 
 int16_t dy = 0; 
-// for splitting dx, dy into multiple steps
-int16_t remaining_x;
-int16_t remaining_y;
 
 // Force sensor -------------------------------------------
 int8_t vp_readings[NUM_READINGS];
 int8_t vn_readings[NUM_READINGS];
 int16_t vp_total = 0;
 int16_t vn_total = 0;
-int16_t vout=0;
+double vout=0;
 int read_index = 0;
 char print_buffer[64];
+uint8_t force_out;
 //Position
 int16_t abs_x = 0;
 int16_t abs_y = 0;
-uint8_t highByte_x = 0;
-uint8_t lowByte_x = 0;
-uint8_t highByte_y = 0;
-uint8_t lowByte_y = 0;
-
+int scale = 1;
+//Counter for smoothing readings
 int count = 0;
-
 
 void setup() {
   Serial.begin(115200);
-
   //Force Sensor
   for (int i = 0; i < NUM_READINGS; i++)
   {
@@ -90,89 +80,42 @@ void setup() {
     delay(500);
   }
   //moved to 0,0
-  //bleMouseCustom.move(0, 0, 0);
+  bleMouseCustom.move(127,127,0);
+  bleMouseCustom.pen(127,127,0);
 }
 
 void loop() {
-  //use WRITE_PROTECT register to test spi.write()
-  //Serial.println("Entered"); 
-  //uint8_t ret = spi.read(WRITE_PROTECT);
-  //sprintf(buffer, "WP = 0x%X", ret);
-  //Serial.println(buffer);  
-
   readOpticalSensor();
-  int16_t force_out = readForceSensor(); // not verified!!
-  // read accelerometer
-
-  remaining_x = dx;
-  remaining_y = dy;
+  force_out = readForceSensor();
   
-  
-  // Loop until both X and Y movements are fully processed.
-  while (remaining_x != 0 || remaining_y != 0) {
-    int8_t stepX, stepY;
+  //discard 8 samples of movement to slow movement of pen artificially
+    if(count>8){
+      //increase count for absolute position
+      abs_x += dx;
+      abs_y += dy;
+      count=0;
+    } else {
+      count++;
+    }
 
-    // Break X movement into an 8-bit step.
-    if (remaining_x > 127)        { stepX = 127; }
-    else if (remaining_x < -128)  { stepX = -128; } 
-    else                          { stepX = (int8_t)remaining_x; }
+    //virtual boundaries (uint8_t sent over BLE, so 255 max)
+    if(abs_x > 255*scale){
+      abs_x = 255*scale;
+    }
+    if(abs_x < 0){
+      abs_x = 0;
+    }
+    if(abs_y > 255*scale){
+      abs_y = 255*scale;
+    }
+    if(abs_y < 0){
+      abs_y = 0;
+    }
 
-    // Break Y movement into an 8-bit step.
-    if (remaining_y > 127)        { stepY = 127; } 
-    else if (remaining_y < -128)  { stepY = -128; } 
-    else                          { stepY = (int8_t)remaining_y; }
-
-    // Serial.println("stepX"); 
-    // Serial.println(stepX); 
-    // Serial.println("stepY"); 
-    // Serial.println(stepY); 
-
-    //Send the move command with the computed step values.
-    //bleMouseCustom.press(MOUSE_LEFT);
-    
-    // Update the remaining movement.
-    remaining_x -= stepX;
-    remaining_y -= stepY;
-    
-  //artificial smoothing to slow mouse speed due to small increments
-  if(count>10){
-  //increase count for absolute position
-    abs_x += stepX;
-    abs_y += stepY;
-    count=0;
-  } else {
-    count++;
-  }
-
-  //virtual boundaries
-  if(abs_x > 255){
-    abs_x = 255;
-  }
-  if(abs_x < 0){
-    abs_x = 0;
-  }
-  if(abs_y > 255){
-    abs_y = 255;
-  }
-  if(abs_y < 0){
-    abs_y = 0;
-  }
-
-  /* IGNORE */
-  //test to split x and y into two uint8_t to be sent over BLE
-  //uint8_t highByte_x = (abs_x >> 8) & 0xFF;  // mask most sig byte with 255 to remove least sig
-  //uint8_t lowByte_x = abs_x & 0xFF;           // mask least sig byte with 255 to remove most sig
-  //uint8_t highByte_y = (abs_y >> 8) & 0xFF;  
-  //uint8_t lowByte_y = abs_y & 0xFF;           
-  
-  //add force condition to not send position again so when pen is off table it doesnt move
-  bleMouseCustom.move(abs_x, abs_y, force_out);
-  
-  
-  
-  //bleMouseCustom.move(highByte_x, lowByte_x, highByte_y, lowByte_y, force_out);
-  //Serial.println(force_out);
-  }
+    //send mouse data (mouse scaling is set to 2x position of pen by OS)
+    bleMouseCustom.move(abs_x/(2*scale), abs_y/(2*scale), 0);
+    //send pen data
+    bleMouseCustom.pen(abs_x/scale, abs_y/scale, force_out);
 }
 
 /*
@@ -205,7 +148,6 @@ int initOpticalSensor()
       if (spi.read(initAddresses[i]) != initValues[i]){ return i+1; }
     }
   }
-
   return 0;
 }
 
@@ -222,25 +164,17 @@ int readOpticalSensor(){
     dx = -(((int16_t)delta_xh << 8) | delta_xl);
     dy = -(((int16_t)delta_yh << 8) | delta_yl);
 
-    // Serial.println("x movement"); 
-    // Serial.println(dx); 
-    // Serial.println("y movement"); 
-    // Serial.println(dy);
-
-    //dx = (abs(dx)) > 1 ? dx : 0;
-    //dy = (abs(dy)) > 1 ? dy : 0;
   }
   else
-  { // if (((spi.read(MOTION_STATUS)) >> 7) == 0){
-    //Serial.println("Thre are no direction detected"); 
+  { 
     dx = 0;
     dy = 0;
-    //bleMouseCustom.release(MOUSE_LEFT);
   }
   return 0;
 }
 
 int readForceSensor(){
+  //takes 8 readings and averages for force output
   vp_total -= vp_readings[read_index];
   vn_total -= vn_readings[read_index];
   vp_readings[read_index] = analogRead(FORCE_VN_PIN);
@@ -254,9 +188,9 @@ int readForceSensor(){
   //pressed goes to 15
 
   //normalize to range 0 to 255
-  vout = ((((vp_total/8) - (vn_total/8))-(-15.0))/30.0)*255.0;
-  //return vout;
-  return vout;
+  vout = ((((vp_total/8) - (vn_total/8))-(-15.0))/30.0)*255;
+
+  return (uint8_t)vout;
 }
 
 
