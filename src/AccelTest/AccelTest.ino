@@ -118,10 +118,19 @@ void setup(void)
   Serial.begin(9600);
   Serial.println("Accelerometer Test"); Serial.println("");
 
+  delay(5000);
+
   Wire.setPins(I2C_SDA, I2C_SCL);
+  Serial.println("Set wire pins");
+
+  delay(5000);
   
+  bool status = accel.begin();
+  Serial.println("Init sensor");
+
+  delay(5000);
   /* Initialise the sensor */
-  if(!accel.begin(0x53))
+  if(!status)
   {
     /* There was a problem detecting the ADXL345 ... check your connections */
     Serial.println("Ooops, no ADXL345 detected ... Check your wiring!");
@@ -131,15 +140,15 @@ void setup(void)
   /* Set the range to whatever is appropriate for your project */
   // accel.setRange(ADXL345_RANGE_16_G);
   // accel.setRange(ADXL345_RANGE_8_G);
-  accel.setRange(ADXL345_RANGE_4_G);
+  //accel.setRange(ADXL345_RANGE_4_G);
   // accel.setRange(ADXL345_RANGE_2_G);
   
   /* Display some basic information on this sensor */
-  displaySensorDetails();
+  //displaySensorDetails();
   
   /* Display additional settings (outside the scope of sensor_t) */
-  displayDataRate();
-  displayRange();
+  //displayDataRate();
+  //displayRange();
   Serial.println("");
 }
 
